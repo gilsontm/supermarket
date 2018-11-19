@@ -14,8 +14,13 @@ public class Clerk extends Employee {
 		this.counterNumber = counterNumber;
 	}
 	
+	// calcular salário com base no tempo trabalhado e número de horas;
 	public Double calculateSalary(){
-		return this.getBaseSalary() * 5; // calcular salÃ¡rio com base no tempo trabalhado e nÃºmero de horas;
+		if (this.getTimeWorked() > 3) {
+			return (100 * this.getTimeWorked()) + (this.getBaseSalary() * (0.8 + this.getWorkingHours() / 20));
+		} else {
+			return this.getBaseSalary() * (0.8 + this.getWorkingHours() / 20);
+		}
 	}
 
 	public Integer getCounterNumber() {

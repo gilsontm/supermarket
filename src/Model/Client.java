@@ -21,11 +21,11 @@ public class Client extends Person {
 		this.valueSpent = valueSpent;
 	}
 
+	// calcula os pontos (de uma suposta promoção para clientes) de acordo com o valor gasto pelo cliente
 	public Integer calculatePoints() {
-		
 		if (this.valueSpent > 1000){
-			return new Integer((int) Math.round(this.valueSpent * 50));
+			return new Integer((int) Math.round(this.valueSpent * 20));
 		}
-		return new Integer((int) Math.round(this.valueSpent * 35));
+		return new Integer((int) Math.round(this.valueSpent * 15));
 	}
 }

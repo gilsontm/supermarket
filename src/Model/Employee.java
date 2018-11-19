@@ -18,8 +18,10 @@ public class Employee extends Person {
 		this.workingHours = workingHours;
 	}
 	
+	// calcula o sal·rio atual
+	// este mÈtodo È sobrescrito nas subclasses Manager e Clerk
 	public Double calculateSalary(){
-		return baseSalary * 5; // calcular sal√°rio com base no tempo trabalhado e n√∫mero de horas;
+		return baseSalary;
 	}
 
 	public Double getBaseSalary() {

@@ -14,9 +14,14 @@ public class Manager extends Employee {
 		this.department = department;
 	}
 	
+	// calcular salário com base no tempo trabalhado e número de horas;
 	@Override
 	public Double calculateSalary(){
-		return this.getBaseSalary() * 5; // calcular salÃ¡rio com base no tempo trabalhado e nÃºmero de horas;
+		if (this.getTimeWorked() > 10) {
+			return (1.5 * this.getBaseSalary()) * (1 + this.getWorkingHours() / 20); 
+		} else {
+			return this.getBaseSalary() * (1 + this.getWorkingHours() / 20);
+		}
 	}
 
 	public Department getDepartment() {

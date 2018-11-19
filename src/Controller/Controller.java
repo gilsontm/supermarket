@@ -36,7 +36,7 @@ public class Controller {
 		do {
 			optionMenu = v.getOption(); //0 - Cadastrar, 1 - Consultar, 2 - Alterar, 3 - Excluir, 4 - Sair	
 			switch(optionMenu) {
-			case 0: 
+			case 0: // cadastrar
 				optionLowerMenu = v.getRegisterOption(); //0 - Cliente, 1 - Fornecedor, 2 - Atendente, 3 - Gerente, 4 - Departamento, 5 - Cancelar
 				switch(optionLowerMenu) {
 				case 0:
@@ -90,7 +90,6 @@ public class Controller {
 					if (companyCnpj == null) {
 						break;
 					}
-					
 					supplier = new Supplier();
 					supplier.setId(id);
 					supplier.setName(name);
@@ -130,11 +129,10 @@ public class Controller {
 					if (workingHours == null) {
 						break;
 					}
-					counterNumber = v.getInteger("atendente", "caixa");
+					counterNumber = v.getInteger("atendente", "número do caixa");
 					if (counterNumber == null) {
 						break;
 					}
-					
 					clerk = new Clerk();
 					clerk.setId(id);
 					clerk.setName(name);
@@ -151,14 +149,15 @@ public class Controller {
 						v.printMessage("Limite de funcionários atingido. Impossível cadastrar.");
 						break;
 					}
-					
 					if (!Controller.canRegisterNewManager(arrayEmployees, arrayDepartments)) {
 						v.printMessage("Não há departamentos suficientes para cadastrar um novo gerente."
 								+ " \nPor favor, cadastre um departamento primeiro.");
 						break;
 					}
-					
 					departmentId = v.getInteger("gerente", "id do departamento");
+					if (departmentId == null) {
+						break;
+					}
 					if (departmentId < 0 || departmentId >= arrayDepartments.length) {
 						v.printMessage("Id inválido.");
 						break;
@@ -171,7 +170,6 @@ public class Controller {
 						v.printMessage("Esse departamento já tem um gerente cadastrado.");
 						break;
 					}
-					
 					name = v.getString("gerente", "nome");
 					if (name == null) {
 						break;
@@ -192,7 +190,6 @@ public class Controller {
 					if (workingHours == null) {
 						break;
 					}
-					
 					manager = new Manager();
 					manager.setName(name);
 					manager.setPhone(phone);
@@ -208,20 +205,27 @@ public class Controller {
 						v.printMessage("Limite de departamentos atingido.");
 						break;
 					}
+					name = v.getString("departamento", "nome");
+					if (name == null) {
+						break;
+					}
 					department = new Department();
 					department.setId(id);
-					department.setName(v.getString("departamento", "nome"));
+					department.setName(name);
 					arrayDepartments[id] = department;
 					break;
 				case 5: // cancelar
 					break;
 				}
 				break;
-			case 1:
+			case 1: // consultar
 				optionLowerMenu = v.getSearchOption(); //0 - Cliente, 1 - Fornecedor, 2 - Atendente, 3 - Gerente, 4 - Departamento, 5 - Cancelar
 				switch (optionLowerMenu) {
 				case 0:
 					id = v.getInteger("cliente", "id");
+					if (id == null) {
+						break;
+					}
 					if (id < 0 || id >= arrayClients.length) {
 						v.printMessage("Id inválido.");
 						break;
@@ -234,6 +238,9 @@ public class Controller {
 					break;
 				case 1:
 					id = v.getInteger("fornecedor", "id");
+					if (id == null) {
+						break;
+					}
 					if (id < 0 || id >= arraySuppliers.length) {
 						v.printMessage("Id inválido.");
 						break;
@@ -246,6 +253,9 @@ public class Controller {
 					break;
 				case 2:
 					id = v.getInteger("atendente", "id");
+					if (id == null) {
+						break;
+					}
 					if (id < 0 || id >= arrayEmployees.length) {
 						v.printMessage("Id inválido.");
 						break;
@@ -262,6 +272,9 @@ public class Controller {
 					break;
 				case 3:
 					id = v.getInteger("gerente", "id");
+					if (id == null) {
+						break;
+					}
 					if (id < 0 || id >= arrayEmployees.length) {
 						v.printMessage("Id inválido.");
 						break;
@@ -278,6 +291,9 @@ public class Controller {
 					break;
 				case 4:
 					id = v.getInteger("departamento", "id");
+					if (id == null) {
+						break;
+					}
 					if (id < 0 || id >= arrayDepartments.length) {
 						v.printMessage("Id inválido.");
 						break;
@@ -290,28 +306,198 @@ public class Controller {
 					break;
 				}
 				break;
-			case 2:
+			case 2: // alterar dados
 				optionLowerMenu = v.getAlterOption(); //0 - Cliente, 1 - Fornecedor, 2 - Atendente, 3 - Gerente, 4 - Departamento, 5 - Cancelar
 				switch (optionLowerMenu) {
 				case 0:
+					id = v.getInteger("cliente", "id");
+					if (id == null) {
+						break;
+					}
+					if (id < 0 || id >= arrayClients.length) {
+						v.printMessage("Id inválido");
+						break;
+					}
+					client = arrayClients[id];
+					if (client == null) {
+						v.printMessage("Nenhum cliente cadastrado sob esse id.");
+						break;
+					}
+					name = v.getString("cliente", "novo nome");
+					if (name == null) {
+						break;
+					}
+					phone = v.getString("cliente", "novo telefone");
+					if (phone == null) {
+						break;
+					}
+					valueSpent = v.getDouble("cliente", "novo valor gasto");
+					if (valueSpent == null) {
+						break;
+					}
+					client.setName(name);
+					client.setPhone(phone);
+					client.setValueSpent(valueSpent);
 					break;
 				case 1:
+					id = v.getInteger("fornecedor", "id");
+					if (id == null) {
+						break;
+					}
+					if (id < 0 || id >= arraySuppliers.length) {
+						v.printMessage("Id inválido.");
+						break;
+					}
+					supplier = arraySuppliers[id];
+					if (supplier == null) {
+						v.printMessage("Nenhum fornecedor cadastrado sob esse id.");
+						break;
+					}
+					name = v.getString("fornecedor", "novo nome");
+					if (name == null) {
+						break;
+					}
+					phone = v.getString("fornecedor", "novo telefone");
+					if (phone == null) {
+						break;
+					}
+					productType = v.getString("fornecedor", "novo tipo do produto");
+					if (productType == null) {
+						break;
+					}
+					companyName = v.getString("fornecedor", "novo nome da empresa");
+					if (companyName == null) {
+						break;
+					}
+					companyCnpj = v.getString("fornecedor", "novo CNPJ da empresa");
+					if (companyCnpj == null) {
+						break;
+					}
+					supplier.setName(name);
+					supplier.setPhone(phone);
+					supplier.setProductType(productType);
+				
+					company = supplier.getCompany();
+					company.setName(companyName);
+					company.setCnpj(companyCnpj);
 					break;
 				case 2:
+					id = v.getInteger("atendente", "id");
+					if (id == null){
+						break;
+					}
+					if (id < 0 || id >= arrayEmployees.length) {
+						v.printMessage("Id inválido.");
+						break;
+					}
+					if (!(arrayEmployees[id] instanceof Clerk)) {
+						v.printMessage("Nenhum atendente cadastrado sob esse id.");
+						break;
+					}
+					name = v.getString("atendente", "novo nome");
+					if (name == null) {
+						break;
+					}
+					phone = v.getString("atendente", "novo telefone");
+					if (phone == null) {
+						break;
+					}
+					baseSalary = v.getDouble("atendente", "novo salário base");
+					if (baseSalary == null) {
+						break;
+					}
+					timeWorked = v.getInteger("atendente", "novo tempo de serviço");
+					if (timeWorked == null) {
+						break;
+					}
+					workingHours = v.getInteger("atendente", "nova carga horária");
+					if (workingHours == null) {
+						break;
+					}
+					counterNumber = v.getInteger("atendente", "novo número do caixa");
+					if (counterNumber == null) {
+						break;
+					}
+					clerk = (Clerk) arrayEmployees[id];
+					clerk.setName(name);
+					clerk.setPhone(phone);
+					clerk.setBaseSalary(baseSalary);
+					clerk.setTimeWorked(timeWorked);
+					clerk.setWorkingHours(workingHours);
+					clerk.setCounterNumber(counterNumber);
 					break;
 				case 3:
+					id = v.getInteger("gerente", "id");
+					if (id == null){
+						break;
+					}
+					if (id < 0 || id >= arrayEmployees.length) {
+						v.printMessage("Id inválido.");
+						break;
+					}
+					if (!(arrayEmployees[id] instanceof Manager)) {
+						v.printMessage("Nenhum gerente cadastrado sob esse id.");
+						break;
+					}
+					name = v.getString("gerente", "novo nome");
+					if (name == null) {
+						break;
+					}
+					phone = v.getString("gerente", "novo telefone");
+					if (phone == null) {
+						break;
+					}
+					baseSalary = v.getDouble("gerente", "novo salário base");
+					if (baseSalary == null) {
+						break;
+					}
+					timeWorked = v.getInteger("gerente", "novo tempo de serviço");
+					if (timeWorked == null) {
+						break;
+					}
+					workingHours = v.getInteger("gerente", "nova carga horária");
+					if (workingHours == null) {
+						break;
+					}
+					manager = (Manager) arrayEmployees[id];
+					manager.setName(name);
+					manager.setPhone(phone);
+					manager.setBaseSalary(baseSalary);
+					manager.setTimeWorked(timeWorked);
+					manager.setWorkingHours(workingHours);					
 					break;
 				case 4:
+					id = v.getInteger("departamento", "id");
+					if (id == null) {
+						break;
+					}
+					if (id < 0 || id >= arrayDepartments.length) {
+						v.printMessage("Id inválido.");
+						break;
+					}
+					department = arrayDepartments[id];
+					if (department == null) {
+						v.printMessage("Nenhum departamento cadastrado sob esse id.");
+						break;
+					}
+					name = v.getString("departamento", "novo nome");
+					if (name == null) {
+						break;
+					}
+					department.setName(name);
 					break;
 				case 5: // cancelar
 					break;
 				}
 				break;
-			case 3:
+			case 3: // excluir
 				optionLowerMenu = v.getRemoveOption(); //0 - Cliente, 1 - Fornecedor, 2 - Atendente, 3 - Gerente, 4 - Cancelar
 				switch (optionLowerMenu) {
 				case 0:
 					id = v.getInteger("cliente", "id");
+					if (id == null) {
+						break;
+					}
 					if (id < 0 || id >= arrayClients.length) {
 						v.printMessage("Id inválido.");
 						break;
@@ -325,6 +511,9 @@ public class Controller {
 					break;
 				case 1:
 					id = v.getInteger("fornecedor", "id");
+					if (id == null) {
+						break;
+					}
 					if (id < 0 || id >= arraySuppliers.length) {
 						v.printMessage("Id inválido.");
 						break;
@@ -338,6 +527,9 @@ public class Controller {
 					break;
 				case 2:
 					id = v.getInteger("atendente", "id");
+					if (id == null) {
+						break;
+					}
 					if (id < 0 || id >= arrayEmployees.length) {
 						v.printMessage("Id inválido.");
 						break;
@@ -355,6 +547,9 @@ public class Controller {
 					break;
 				case 3:
 					id = v.getInteger("gerente", "id");
+					if (id == null) {
+						break;
+					}
 					if (id < 0 || id >= arrayEmployees.length) {
 						v.printMessage("Id inválido.");
 						break;
@@ -374,15 +569,15 @@ public class Controller {
 					break; 
 				}
 				break;
-			case 4:
+			case 4: // sair
 				running = false;
 				break;
 			}
 		} while(running);
-
 	}
 	
-	public static Integer getNextPosition(Object[] array){
+	// retorna a próxima posição livre (null) no array
+	public static Integer getNextPosition(Object[] array){ 
 		for (int i = 0; i < array.length; i++){
 			if (array[i] == null){
 				return i;
@@ -391,6 +586,7 @@ public class Controller {
 		return null;
 	}
 	
+	// retorna true se o departamento 'd' já possui um gerente cadastrado, caso contrário retorna false
     public static boolean hasManager(Employee[] array, Department d){
 		for (Employee e : array){
 			if (e instanceof Manager){
@@ -402,6 +598,8 @@ public class Controller {
 		return false;
     }
     
+    // retorna true se encontrar ao menos uma vaga de gerente disponível em algum departamento,
+    // caso contrário retorna false
     public static boolean canRegisterNewManager(Employee[] arrayEmployees, Department[] arrayDepartments) {
     	int numberDepartments = 0;
     	for (Department d : arrayDepartments) {
@@ -421,4 +619,3 @@ public class Controller {
     	return false;
     }
 }
-
