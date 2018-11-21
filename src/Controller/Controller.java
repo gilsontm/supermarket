@@ -1,14 +1,14 @@
 package Controller;
 
-import View.View;
-
 import Model.Clerk;
 import Model.Client;
 import Model.Company;
 import Model.Department;
-import Model.Manager;
 import Model.Employee;
+import Model.Manager;
+import Model.Person;
 import Model.Supplier;
+import View.View;
 
 public class Controller {
 
@@ -84,6 +84,7 @@ public class Controller {
 					client.setPhone(phone);
 					client.setValueSpent(valueSpent);
 					arrayClients[id] = client;
+					v.printMessage("Cliente cadastrado com sucesso (id = " + id +").");
 					break;
 				case 1:
 					id = Controller.getNextPosition(arraySuppliers);
@@ -123,6 +124,7 @@ public class Controller {
 					
 					supplier.setCompany(company);
 					arraySuppliers[id] = supplier;
+					v.printMessage("Fornecedor cadastrado com sucesso (id = " + id +").");
 					break;
 				case 2:
 					id = Controller.getNextPosition(arrayEmployees);
@@ -163,6 +165,7 @@ public class Controller {
 					clerk.setWorkingHours(workingHours);
 					clerk.setCounterNumber(counterNumber);
 					arrayEmployees[id] = clerk;
+					v.printMessage("Atendente cadastrado com sucesso (id = " + id +").");
 					break;
 				case 3:
 					id = Controller.getNextPosition(arrayEmployees);
@@ -174,17 +177,9 @@ public class Controller {
 						v.printMessage("Não há departamentos suficientes para cadastrar um novo gerente."
 								+ " \nPor favor, cadastre um departamento primeiro.");
 						break;
-					}
-					departmentId = v.getInteger("gerente", "id do departamento");
+					}		
+					departmentId = v.showList(Controller.departmentArrayToString(arrayDepartments), "Selecione um departamento");
 					if (departmentId == null) {
-						break;
-					}
-					if (departmentId < 0 || departmentId >= arrayDepartments.length) {
-						v.printMessage("Id inválido.");
-						break;
-					}
-					if (arrayDepartments[departmentId] == null) {
-						v.printMessage("Esse departamento não está cadastrado.");
 						break;
 					}
 					if (Controller.hasManager(arrayEmployees, arrayDepartments[departmentId])) {
@@ -212,6 +207,7 @@ public class Controller {
 						break;
 					}
 					manager = new Manager();
+					manager.setId(id);
 					manager.setName(name);
 					manager.setPhone(phone);
 					manager.setBaseSalary(baseSalary);
@@ -219,6 +215,7 @@ public class Controller {
 					manager.setWorkingHours(workingHours);
 					manager.setDepartment(arrayDepartments[departmentId]);
 					arrayEmployees[id] = manager;
+					v.printMessage("Gerente cadastrado com sucesso (id = " + id +").");
 					break;
 				case 4:
 					id = Controller.getNextPosition(arrayDepartments);
@@ -234,6 +231,7 @@ public class Controller {
 					department.setId(id);
 					department.setName(name);
 					arrayDepartments[id] = department;
+					v.printMessage("Departamento cadastrado com sucesso (id = " + id +").");
 					break;
 				case 5: // cancelar
 					break;
@@ -243,84 +241,56 @@ public class Controller {
 				optionLowerMenu = v.getSearchOption(); //0 - Cliente, 1 - Fornecedor, 2 - Atendente, 3 - Gerente, 4 - Departamento, 5 - Cancelar
 				switch (optionLowerMenu) {
 				case 0:
-					id = v.getInteger("cliente", "id");
+					if (Controller.numberOfElements(arrayClients) == 0) {
+						v.printMessage("Nenhum cliente cadastrado.");
+						break;
+					}
+					id = v.showList(Controller.personArrayToString(arrayClients));
 					if (id == null) {
-						break;
-					}
-					if (id < 0 || id >= arrayClients.length) {
-						v.printMessage("Id inválido.");
-						break;
-					}
-					if (arrayClients[id] == null) {
-						v.printMessage("Nenhum cliente cadastrado sob esse id.");
 						break;
 					}
 					v.printInformation(arrayClients[id]);
 					break;
 				case 1:
-					id = v.getInteger("fornecedor", "id");
+					if (Controller.numberOfElements(arraySuppliers) == 0) {
+						v.printMessage("Nenhum fornecedor cadastrado.");
+						break;
+					}
+					id = v.showList(Controller.personArrayToString(arraySuppliers));
 					if (id == null) {
-						break;
-					}
-					if (id < 0 || id >= arraySuppliers.length) {
-						v.printMessage("Id inválido.");
-						break;
-					}
-					if (arraySuppliers[id] == null) {
-						v.printMessage("Nenhum cliente cadastrado sob esse id.");
 						break;
 					}
 					v.printInformation(arraySuppliers[id]);
 					break;
 				case 2:
-					id = v.getInteger("atendente", "id");
+					if (Controller.numberOfClerks(arrayEmployees) == 0) {
+						v.printMessage("Nenhum atendente cadastrado.");
+						break;
+					}
+					id = v.showList(Controller.clerkArrayToString(arrayEmployees));
 					if (id == null) {
-						break;
-					}
-					if (id < 0 || id >= arrayEmployees.length) {
-						v.printMessage("Id inválido.");
-						break;
-					}
-					if (arrayEmployees[id] == null) {
-						v.printMessage("Nenhum atendente cadastrado sob esse id.");
-						break;
-					}
-					if (!(arrayEmployees[id] instanceof Clerk)) {
-						v.printMessage("O funcionário cadastrado sob esse id não é um atendente.");
 						break;
 					}
 					v.printInformation((Clerk) arrayEmployees[id]);
 					break;
 				case 3:
-					id = v.getInteger("gerente", "id");
+					if (Controller.numberOfManagers(arrayEmployees) == 0) {
+						v.printMessage("Nenhum gerente cadastrado.");
+						break;
+					}
+					id = v.showList(Controller.managerArrayToString(arrayEmployees));
 					if (id == null) {
-						break;
-					}
-					if (id < 0 || id >= arrayEmployees.length) {
-						v.printMessage("Id inválido.");
-						break;
-					}
-					if (arrayEmployees[id] == null) {
-						v.printMessage("Nenhum gerente cadastrado sob esse id.");
-						break;
-					}
-					if (!(arrayEmployees[id] instanceof Manager)) {
-						v.printMessage("O funcionário cadastrado sob esse id não é um gerente.");
 						break;
 					}
 					v.printInformation((Manager) arrayEmployees[id]);
 					break;
 				case 4:
-					id = v.getInteger("departamento", "id");
+					if (Controller.numberOfElements(arrayDepartments) == 0) {
+						v.printMessage("Nenhum departamento cadastrado.");
+						break;
+					}
+					id = v.showList(Controller.departmentArrayToString(arrayDepartments));
 					if (id == null) {
-						break;
-					}
-					if (id < 0 || id >= arrayDepartments.length) {
-						v.printMessage("Id inválido.");
-						break;
-					}
-					if (arrayDepartments[id] == null) {
-						v.printMessage("Nenhum departamento cadastrado sob esse id.");
 						break;
 					}
 					v.printInformation(arrayDepartments[id]);
@@ -331,17 +301,12 @@ public class Controller {
 				optionLowerMenu = v.getAlterOption(); //0 - Cliente, 1 - Fornecedor, 2 - Atendente, 3 - Gerente, 4 - Departamento, 5 - Cancelar
 				switch (optionLowerMenu) {
 				case 0:
-					id = v.getInteger("cliente", "id");
+					if (Controller.numberOfElements(arrayClients) == 0) {
+						v.printMessage("Nenhum cliente cadastrado.");
+						break;
+					}
+					id = v.showList(Controller.personArrayToString(arrayClients));
 					if (id == null) {
-						break;
-					}
-					if (id < 0 || id >= arrayClients.length) {
-						v.printMessage("Id inválido");
-						break;
-					}
-					client = arrayClients[id];
-					if (client == null) {
-						v.printMessage("Nenhum cliente cadastrado sob esse id.");
 						break;
 					}
 					name = v.getString("cliente", "novo nome");
@@ -356,22 +321,18 @@ public class Controller {
 					if (valueSpent == null) {
 						break;
 					}
+					client = arrayClients[id];
 					client.setName(name);
 					client.setPhone(phone);
 					client.setValueSpent(valueSpent);
 					break;
 				case 1:
-					id = v.getInteger("fornecedor", "id");
+					if (Controller.numberOfElements(arraySuppliers) == 0) {
+						v.printMessage("Nenhum fornecedor cadastrado.");
+						break;
+					}
+					id = v.showList(Controller.personArrayToString(arraySuppliers));
 					if (id == null) {
-						break;
-					}
-					if (id < 0 || id >= arraySuppliers.length) {
-						v.printMessage("Id inválido.");
-						break;
-					}
-					supplier = arraySuppliers[id];
-					if (supplier == null) {
-						v.printMessage("Nenhum fornecedor cadastrado sob esse id.");
 						break;
 					}
 					name = v.getString("fornecedor", "novo nome");
@@ -394,6 +355,7 @@ public class Controller {
 					if (companyCnpj == null) {
 						break;
 					}
+					supplier = arraySuppliers[id];
 					supplier.setName(name);
 					supplier.setPhone(phone);
 					supplier.setProductType(productType);
@@ -403,16 +365,12 @@ public class Controller {
 					company.setCnpj(companyCnpj);
 					break;
 				case 2:
-					id = v.getInteger("atendente", "id");
-					if (id == null){
+					if (Controller.numberOfClerks(arrayEmployees) == 0) {
+						v.printMessage("Nenhum atendente cadastrado.");
 						break;
 					}
-					if (id < 0 || id >= arrayEmployees.length) {
-						v.printMessage("Id inválido.");
-						break;
-					}
-					if (!(arrayEmployees[id] instanceof Clerk)) {
-						v.printMessage("Nenhum atendente cadastrado sob esse id.");
+					id = v.showList(Controller.clerkArrayToString(arrayEmployees));
+					if (id == null) {
 						break;
 					}
 					name = v.getString("atendente", "novo nome");
@@ -448,16 +406,12 @@ public class Controller {
 					clerk.setCounterNumber(counterNumber);
 					break;
 				case 3:
-					id = v.getInteger("gerente", "id");
-					if (id == null){
+					if (Controller.numberOfManagers(arrayEmployees) == 0) {
+						v.printMessage("Nenhum gerente cadastrado.");
 						break;
 					}
-					if (id < 0 || id >= arrayEmployees.length) {
-						v.printMessage("Id inválido.");
-						break;
-					}
-					if (!(arrayEmployees[id] instanceof Manager)) {
-						v.printMessage("Nenhum gerente cadastrado sob esse id.");
+					id = v.showList(Controller.managerArrayToString(arrayEmployees));
+					if (id == null) {
 						break;
 					}
 					name = v.getString("gerente", "novo nome");
@@ -488,19 +442,15 @@ public class Controller {
 					manager.setWorkingHours(workingHours);					
 					break;
 				case 4:
-					id = v.getInteger("departamento", "id");
+					if (Controller.numberOfElements(arrayDepartments) == 0) {
+						v.printMessage("Nenhum departamento cadastrado.");
+						break;
+					}
+					id = v.showList(Controller.departmentArrayToString(arrayDepartments));
 					if (id == null) {
 						break;
 					}
-					if (id < 0 || id >= arrayDepartments.length) {
-						v.printMessage("Id inválido.");
-						break;
-					}
 					department = arrayDepartments[id];
-					if (department == null) {
-						v.printMessage("Nenhum departamento cadastrado sob esse id.");
-						break;
-					}
 					name = v.getString("departamento", "novo nome");
 					if (name == null) {
 						break;
@@ -515,72 +465,48 @@ public class Controller {
 				optionLowerMenu = v.getRemoveOption(); //0 - Cliente, 1 - Fornecedor, 2 - Atendente, 3 - Gerente, 4 - Cancelar
 				switch (optionLowerMenu) {
 				case 0:
-					id = v.getInteger("cliente", "id");
+					if (Controller.numberOfElements(arrayClients) == 0) {
+						v.printMessage("Nenhum cliente cadastrado.");
+						break;
+					}
+					id = v.showList(Controller.personArrayToString(arrayClients));
 					if (id == null) {
-						break;
-					}
-					if (id < 0 || id >= arrayClients.length) {
-						v.printMessage("Id inválido.");
-						break;
-					}
-					if (arrayClients[id] == null) {
-						v.printMessage("Nenhum cliente cadastrado sob esse id.");
 						break;
 					}
 					arrayClients[id] = null;
 					v.printMessage("Cliente removido.");
 					break;
 				case 1:
-					id = v.getInteger("fornecedor", "id");
+					if (Controller.numberOfElements(arraySuppliers) == 0) {
+						v.printMessage("Nenhum fornecedor cadastrado.");
+						break;
+					}
+					id = v.showList(Controller.personArrayToString(arraySuppliers));
 					if (id == null) {
-						break;
-					}
-					if (id < 0 || id >= arraySuppliers.length) {
-						v.printMessage("Id inválido.");
-						break;
-					}
-					if (arraySuppliers[id] == null) {
-						v.printMessage("Nenhum fornecedor cadastrado sob esse id.");
 						break;
 					}
 					arraySuppliers[id] = null;
 					v.printMessage("Fornecedor removido.");
 					break;
 				case 2:
-					id = v.getInteger("atendente", "id");
+					if (Controller.numberOfClerks(arrayEmployees) == 0) {
+						v.printMessage("Nenhum atendente cadastrado.");
+						break;
+					}
+					id = v.showList(Controller.clerkArrayToString(arrayEmployees));
 					if (id == null) {
-						break;
-					}
-					if (id < 0 || id >= arrayEmployees.length) {
-						v.printMessage("Id inválido.");
-						break;
-					}
-					if (arrayEmployees[id] == null) {
-						v.printMessage("Nenhum atendente cadastrado sob esse id.");
-						break;
-					}
-					if (!(arrayEmployees[id] instanceof Clerk)) {
-						v.printMessage("O funcionário cadastrado sob esse id não é um atendente.");
 						break;
 					}
 					arrayEmployees[id] = null;
 					v.printMessage("Atendente removido.");
 					break;
 				case 3:
-					id = v.getInteger("gerente", "id");
+					if (Controller.numberOfManagers(arrayEmployees) == 0) {
+						v.printMessage("Nenhum atendente cadastrado.");
+						break;
+					}
+					id = v.showList(Controller.managerArrayToString(arrayEmployees));
 					if (id == null) {
-						break;
-					}
-					if (id < 0 || id >= arrayEmployees.length) {
-						v.printMessage("Id inválido.");
-						break;
-					}
-					if (arrayEmployees[id] == null) {
-						v.printMessage("Nenhum gerente cadastrado sob esse id.");
-						break;
-					}
-					if (!(arrayEmployees[id] instanceof Manager)) {
-						v.printMessage("O funcionário cadastrado sob esse id não é um gerente.");
 						break;
 					}
 					arrayEmployees[id] = null;
@@ -639,4 +565,90 @@ public class Controller {
     	}
     	return false;
     }
+    
+    // retorna o número de elementos não nulos do array
+    public static Integer numberOfElements(Object[] array) {
+    	Integer counter = 0;
+    	for (Object e : array) {
+    		if (e != null) {
+    			counter++;
+    		}
+    	}
+    	return counter;
+    }
+    
+    public static Integer numberOfClerks(Employee[] array) {
+    	Integer counter = 0;
+    	for (Employee e : array) {
+    		if (e != null) {
+    			if (e instanceof Clerk) {
+    				counter++;
+    			}
+    		}
+    	}
+    	return counter;
+    }
+    
+    public static Integer numberOfManagers(Employee[] array) {
+    	Integer counter = 0;
+    	for (Employee e : array) {
+    		if (e != null) {
+    			if (e instanceof Manager) {
+    				counter++;
+    			}
+    		}
+    	}
+    	return counter;
+    }
+    
+    public static String[] personArrayToString(Person[] array) {
+    	String[] arrayString = new String[Controller.numberOfElements(array)];
+    	for (int i = 0; i < array.length; i++) {
+    		if (array[i] != null) {
+    			arrayString[i] = array[i].getId() + " - Nome: " + array[i].getName();
+    		}
+    	}
+    	return arrayString;
+    }
+    
+    public static String[] clerkArrayToString(Employee[] array) {
+    	String[] arrayString = new String[Controller.numberOfClerks(array)];
+    	for (int i = 0; i < array.length; i++) {
+    		if (array[i] != null) {
+    			if (array[i] instanceof Clerk) {
+    				arrayString[i] = array[i].getId() + " - Nome: " + array[i].getName();
+    			}
+    		}
+    	}
+    	return arrayString;
+    }
+    
+    public static String[] managerArrayToString(Employee[] array) {
+    	String[] arrayString = new String[Controller.numberOfManagers(array)];
+    	for (int i = 0; i < array.length; i++) {
+    		if (array[i] != null) {
+    			if (array[i] instanceof Manager) {
+    				arrayString[i] = array[i].getId() + " - Nome: " + array[i].getName();
+    			}
+    		}
+    	}
+    	return arrayString;
+    }
+    
+    
+    public static String[] departmentArrayToString(Department[] array) {
+    	String[] arrayString = new String[Controller.numberOfElements(array)];
+    	for (int i = 0; i < array.length; i++) {
+    		if (array[i] != null) {
+    			arrayString[i] = array[i].getId() + " - Nome: " + array[i].getName();
+    		}
+    	}
+    	return arrayString;
+    }
 }
+
+
+
+
+
+

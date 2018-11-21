@@ -72,7 +72,17 @@ public class View {
 	
 	// requisita que o usuário digite uma string
 	public String getString(String object, String attribute){
-		return JOptionPane.showInputDialog("Digite o " + attribute + " do " + object);
+		String string = JOptionPane.showInputDialog("Digite o " + attribute + " do " + object);
+		if (string == null) {
+			return null;
+		}
+		while (string.isEmpty()) {
+			string = JOptionPane.showInputDialog("Valor inválido. Digite o " + attribute + " do " + object);
+			if (string == null) {
+				return null;
+			}
+		}
+		return string;
 	}
 
 	// requisita que o usuário digite um inteiro não negativo
@@ -150,6 +160,22 @@ public class View {
 				"\nCarga horária: " + m.getWorkingHours() + "\nDepartamento: " + m.getDepartment().getName() + 
 				"(" + m.getDepartment().getId() + ").";
 		JOptionPane.showMessageDialog(null, information);
+	}
+	
+	public Integer showList(Object[] array) {
+		String choice = (String) JOptionPane.showInputDialog(null, "Selecione uma opção", "Escolha", JOptionPane.PLAIN_MESSAGE,  null, array, array[0]);
+		if (choice == null) {
+			return null;
+		}
+		return Integer.parseInt(choice.substring(0, 1));
+	}
+	
+	public Integer showList(Object[] array, String message) {
+		String choice = (String) JOptionPane.showInputDialog(null, message, "Escolha", JOptionPane.PLAIN_MESSAGE,  null, array, array[0]);
+		if (choice == null) {
+			return null;
+		}
+		return Integer.parseInt(choice.substring(0, 1));
 	}
 	
 	// exibe as informações de um departamento
