@@ -14,6 +14,32 @@ public class Controller {
 
 	public static void main(String[] args) {
 		View v = new View();
+		
+		Client[] arrayClients = null;
+		Supplier[] arraySuppliers = null;
+		Employee[] arrayEmployees = null;
+		Department[] arrayDepartments = null;
+		
+		boolean running = false;
+		
+		Integer sizeClients = v.getSizeArray("clientes");
+		if (!(sizeClients == null)) {
+			arrayClients = new Client[sizeClients];
+			Integer sizeSuppliers = v.getSizeArray("fornecedores");
+			if (!(sizeSuppliers == null)) {
+				arraySuppliers = new Supplier[sizeSuppliers];
+				Integer sizeEmployees = v.getSizeArray("funcionários");
+				if (!(sizeEmployees == null)) {
+					arrayEmployees = new Employee[sizeEmployees];
+					Integer sizeDepartments = v.getSizeArray("departamentos");
+					if (!(sizeDepartments == null)) {
+						arrayDepartments = new Department[sizeDepartments];
+						running = true;
+					}
+				}
+			}
+		}
+		
 		Integer id, departmentId;
 		Integer optionMenu, optionLowerMenu;
 		
@@ -23,17 +49,12 @@ public class Controller {
 		Clerk clerk;
 		Manager manager;
 		Department department;
-		
-		Client[] arrayClients = new Client[v.getSizeArray("clientes")];
-		Supplier[] arraySuppliers = new Supplier[v.getSizeArray("fornecedores")];
-		Employee[] arrayEmployees = new Employee[v.getSizeArray("funcionários")];
-		Department[] arrayDepartments = new Department[v.getSizeArray("departamentos")];
-		
+
 		String name, phone, companyName, companyCnpj, productType;
 		Double valueSpent, baseSalary;
 		Integer timeWorked, workingHours, counterNumber;
-		boolean running = true;
-		do {
+		
+		while (running) {
 			optionMenu = v.getOption(); //0 - Cadastrar, 1 - Consultar, 2 - Alterar, 3 - Excluir, 4 - Sair	
 			switch(optionMenu) {
 			case 0: // cadastrar
@@ -573,7 +594,7 @@ public class Controller {
 				running = false;
 				break;
 			}
-		} while(running);
+		}
 	}
 	
 	// retorna a próxima posição livre (null) no array

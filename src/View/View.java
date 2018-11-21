@@ -26,12 +26,15 @@ public class View {
 		Integer size = null;
 		while (size == null){
 			try {
+				if (number == null) {
+					break;
+				}
 				size = Integer.parseInt(number);
-				if (size <= 0){
+				if (size <= 0) {
 					size = null;
 					throw new Exception();
 				}
-			} catch (Exception e){
+			} catch (Exception e) {
 				number = JOptionPane.showInputDialog("Valor inválido. Digite o limite de " + object + " (int):");
 			}
 		}
@@ -69,16 +72,9 @@ public class View {
 	
 	// requisita que o usuário digite uma string
 	public String getString(String object, String attribute){
-		String string = JOptionPane.showInputDialog("Digite o " + attribute + " do " + object);
-		if (string == null) {
-			return null;
-		}
-		while (string == null || string.isEmpty()){
-			string = JOptionPane.showInputDialog("Valor inválido. Digite o " + attribute + " do " + object);
-		}
-		return string;
+		return JOptionPane.showInputDialog("Digite o " + attribute + " do " + object);
 	}
-	
+
 	// requisita que o usuário digite um inteiro não negativo
 	public Integer getInteger(String object, String attribute){
 		String string = JOptionPane.showInputDialog("Digite o " + attribute + " do " + object + " (int >= 0)");
@@ -88,8 +84,11 @@ public class View {
 		Integer number = null;
 		while (number == null){
 			try {
+				if (string == null) {
+					break;
+				}
 				number = Integer.parseInt(string);
-				if (number < 0){
+				if (number < 0) {
 					throw new Exception();
 				}
 			} catch (Exception e) {
@@ -108,6 +107,9 @@ public class View {
 		Double number = null;
 		while (number == null){
 			try {
+				if (string == null) {
+					break;
+				}
 				number = Double.parseDouble(string);
 				if (number < 0){
 					throw new Exception();
